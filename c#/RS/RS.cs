@@ -1,20 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ЛР2_Шмелева_Тарикова_Хаак__РС_
+namespace my
 {
-	/*
-     * Лабораторная работа #2
-     * по дисциплине "Разностные схемы" 
-     * 
-     * Тарикова А.А.    Шмелева Е.К.    Хаак М.
-     * ДКО-212б         ДКО-121б        ДКО-122б
-     * 
-     * 31 декабря 2014 г.
-     */
-
 	public static class SCHEME
 	{
 		//Параметры схемы
@@ -26,19 +13,6 @@ namespace ЛР2_Шмелева_Тарикова_Хаак__РС_
 
 	class Program
 	{
-
-		static Double Phi1(Double argument)
-		{
-			return Math.Sin(4.0 * Math.PI * argument);
-		}
-
-		static Double Phi2(Double argument)
-		{
-			return Math.Cos(4.0 * Math.PI * argument);
-		}
-
-		/*******************************************************/
-
 		public delegate double fi1(double x);
 		public delegate double fi2(double x);
 
@@ -80,7 +54,7 @@ namespace ЛР2_Шмелева_Тарикова_Хаак__РС_
 				{
 					alpha[j] = (-c) / (a * alpha[j - 1] + b);
 					//beta[j] = (matrix[t - 1, j] - a * beta[j - 1]) / (a * alpha[j - 1] + b);
-					beta[j] = (matrix[t - 1, j] - a * beta[j - 1]) / (a * alpha[j - 1] + b);
+					beta[j] = (matrix[t - 1, j-1] - a * beta[j - 1]) / (a * alpha[j - 1] + b);
 				}
 				//Прямая прогонка, вычисление прогоночных коэффициентов альфа и бета КОНЕЦ
 
@@ -94,7 +68,6 @@ namespace ЛР2_Шмелева_Тарикова_Хаак__РС_
 				w[0] = 0;
 				//Обратная прогонка, вычисление w КОНЕЦ
 				//Решаем систему (19) КОНЕЦ
-
 
 				//решаем систему (20) НАЧАЛО
 				alpha[1] = -c / b;
@@ -133,7 +106,7 @@ namespace ЛР2_Шмелева_Тарикова_Хаак__РС_
 			//Запись в файл 
 			using (System.IO.StreamWriter file = new System.IO.StreamWriter(filename)) {
 				for (int i = 0; i <= n_t; i++) {
-					if (i*tau==0 || i*tau==0.5 || i*tau==1) {
+					if (i*tau==0 || i*tau==0.1 || i*tau==0.2 ||i*tau==0.3 ||i*tau==0.4 || i*tau==0.5 || i*tau==1) {
 						file.WriteLine ("t={0}", i*tau);
 						for (int j = 0; j <= n_x; j++) {
 							file.WriteLine (matrix [i, j].ToString ()+" ");
@@ -150,23 +123,6 @@ namespace ЛР2_Шмелева_Тарикова_Хаак__РС_
 
 		static void Main(string[] args)
 		{
-			#region Явный шаблон 
-
-			//var v1 = new ImplicitMethodStencil(-0.25, 200, 1000, 1, Phi1);
-			//var v2 = new ImplicitMethodStencil(0.25, 200, 1000, 1, Phi2);
-
-			//var unstableV1 = new ImplicitMethodStencil(-0.25, 200, 1000, 1, Phi1, false);
-			//var unstableV2 = new ImplicitMethodStencil(0.25, 200, 1000, 1, Phi2, false);
-
-			//using (System.IO.StreamWriter file = new System.IO.StreamWriter(file2))
-			//{
-			//    foreach (var elem in v2.Slice())
-			//    {
-			//        file.WriteLine(elem.ToString());
-			//    }
-			//}
-
-			#endregion
 
 			//Ввод данных
 			Console.WriteLine("Введите T");
@@ -179,17 +135,8 @@ namespace ЛР2_Шмелева_Тарикова_Хаак__РС_
 			double tau = ((double)T / n_t); //шаг по t
 			double h = ((double)1 / n_x); //шаг по x
 
-			double k1 = SCHEME.a * tau / h;
+			double k1 = -SCHEME.a * tau / h;
 			double k2 = -SCHEME.c * tau / h;
-
-			//Console.WriteLine(func_fi1(0.005));
-			//Console.WriteLine(Phi1(0.005));
-
-			//Console.WriteLine(func_fi1(0.01));
-			//Console.WriteLine(Phi1(0.01));
-
-			//Console.WriteLine(func_fi1(0.1));
-			//Console.WriteLine(Phi1(0.1));
 
 			Solve(func_fi1, T, n_x, n_t, tau, h, k1, "out1.txt");
 			Solve(func_fi2, T, n_x, n_t, tau, h, k2, "out2.txt");
