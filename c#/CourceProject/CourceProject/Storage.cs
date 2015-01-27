@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace CourceProject
 {
+    /// <summary>
+    /// Хранитзначения для построения гистограмм
+    /// </summary>
     public static class BarChart
     {
         public static List<List<double>> bar_chart = new List<List<double>>();
-        public static int prv = 0;
     }
 
 

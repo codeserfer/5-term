@@ -8,11 +8,19 @@ using System.IO;
 
 namespace CourceProject
 {
+    /// <summary>
+    /// Класс для работы с файлами
+    /// </summary>
     public static class FileWorking
     {
-        public static List<String> ListOfFilesTexts = new List<string>();
-        public static List<String> ListOfFilesSamples = new List<string>();
+        public static List<String> ListOfFilesSamples = new List<string>(); //Хранит список файлов с текстами-образцами
+        public static List<String> ListOfFilesTexts = new List<string>(); //Хранит список файлов с анализируемыми текстами
 
+        /// <summary>
+        /// Отбирает буквы, цифры, пробелы, переносы строк и точки
+        /// </summary>
+        /// <param name="c">Проверяемый символ</param>
+        /// <returns>true, если символ подходит для анализа плагиата</returns>
         private static bool IsRightSymbol(char c)
         {
             if (char.IsLetter(c))
@@ -21,14 +29,20 @@ namespace CourceProject
                 return true;
             if (c == ' ')
                 return true;
-            //if (c == '\n')
-             //   return true;
+            if (c == '\n')
+                return true;
             if (c == '.')
                 return true;
             return false;
         }
+        
 
-
+        /// <summary>
+        /// Посимвольно считывает файл, отсекает пунктуацию, двойные пробелы, служебные части речи
+        /// </summary>
+        /// <param name="filename">Путь к считываемому файлу</param>
+        /// <returns>Обработанный считанный файл в виде строки StringBuilder</returns>
+ 
         public static StringBuilder ReadFile(string filename)
         {
             StringBuilder text = new StringBuilder();
@@ -65,6 +79,11 @@ namespace CourceProject
             return (text);
         }
 
+        /// <summary>
+        /// Возвращает тип файла (его расширение)
+        /// </summary>
+        /// <param name="filename">Путь к файлу</param>
+        /// <returns>Расширение файла</returns>
         private static string GetType(string filename)
         {
             var temp = filename.Split(new char[] { '.' });
@@ -78,7 +97,7 @@ namespace CourceProject
         /// </summary>
         /// <param name="path">Путь до проверяемого файла</param>
         /// <returns>true - файл хешировался ранее</returns>
-        public static bool IsProcessed(string path)
+        private static bool IsProcessed(string path)
         {
             var separated_path = path.Split(new char[] { '.' });
             var filename = path + ".Processed";
@@ -91,7 +110,7 @@ namespace CourceProject
         /// </summary>
         /// <param name="path">Путь</param>
         /// <returns>true, если файл содердит хеши</returns>
-        public static bool IsProcessedFile(string path)
+        private static bool IsProcessedFile(string path)
         {
             var separated_path = path.Split(new char[] { '\\' });
             var separated_filename = separated_path[separated_path.Length - 1].Split(new char[] { '.' });
@@ -123,7 +142,7 @@ namespace CourceProject
             return FileList.Count;
         }
 
-        public static Int64 WordHash(string s)
+        private static Int64 WordHash(string s)
         {
             Int64 hash = 0;
             for (int i = 0; i < s.Length; i++)
@@ -145,7 +164,6 @@ namespace CourceProject
             //Если выбран служебный файл с хешами
             if (FileWorking.IsProcessedFile(filename))
             {
-                //Exception
                 MessageBox.Show("Выбран служебный файл!");
                 return;
             }

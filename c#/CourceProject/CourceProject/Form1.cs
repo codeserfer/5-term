@@ -16,11 +16,14 @@ namespace CourceProject
         public Form1()
         {
             InitializeComponent();
-            Vocabulary.ReadVocabulary();
-            if (Environment.ProcessorCount < 4) CONSTANTS.thread_count = 4;
-            else CONSTANTS.thread_count = Environment.ProcessorCount;
+            Vocabulary.ReadVocabulary(); //Считывание словаря
         }
 
+        /// <summary>
+        /// Склонение слова "файл"
+        /// </summary>
+        /// <param name="number_of_loaded_files"></param>
+        /// <returns></returns>
         private static string declension_file(int number_of_loaded_files)
         {
             if (number_of_loaded_files >= 10 && number_of_loaded_files <= 20)
@@ -56,6 +59,11 @@ namespace CourceProject
         {
 
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            this.Text = "Поиск плагиата методом Рабина-Карпа";
+        }
         #endregion
 
         #region Работа с папками
@@ -74,7 +82,7 @@ namespace CourceProject
                 foreach (var i in ListOfFiles)
                 {
                     var temp = i.Split('\\');
-                    FileWorking.ListOfFilesSamples.Add(temp[temp.Length - 1]);
+                    FileWorking.ListOfFilesTexts.Add(temp[temp.Length - 1]);
                 }
                 label7.Text = number_of_loaded_files.ToString();
                 label8.Text=declension_file(number_of_loaded_files);
@@ -103,7 +111,7 @@ namespace CourceProject
                 foreach (var i in ListOfFiles)
                 {
                     var temp = i.Split('\\');
-                    FileWorking.ListOfFilesTexts.Add(temp[temp.Length - 1]);
+                    FileWorking.ListOfFilesSamples.Add(temp[temp.Length - 1]);
                 }
                 label3.Text = number_of_loaded_files.ToString();
                 label4.Text=declension_file(number_of_loaded_files);
@@ -137,7 +145,7 @@ namespace CourceProject
 
                 FileWorking.AddFile(openFileDialog1.FileName, false);
                 var temp = openFileDialog1.FileName.Split('\\');
-                FileWorking.ListOfFilesSamples.Add(temp[temp.Length - 1]);
+                FileWorking.ListOfFilesTexts.Add(temp[temp.Length - 1]);
             }
         }
         //Выбор файла с исследуемыми текстами
@@ -159,7 +167,7 @@ namespace CourceProject
 
                 FileWorking.AddFile(openFileDialog1.FileName, true);
                 var temp = openFileDialog1.FileName.Split('\\');
-                FileWorking.ListOfFilesTexts.Add(temp[temp.Length - 1]);
+                FileWorking.ListOfFilesSamples.Add(temp[temp.Length - 1]);
             }
         }        
         //Выбор файла с текстами-образцами
@@ -169,49 +177,35 @@ namespace CourceProject
         {
             if (Samples.GetCount () == 0)
             {
-                //Exception
                 MessageBox.Show("Нет текстов-образцов!");
                 return;
             }
             if (Texts.GetCount() == 0)
             {
-                //Exception
                 MessageBox.Show("Анализируемых текстов!");
                 return;
             }
 
 
             BarChart.bar_chart.Clear();
-            //chart1.Series[0].Points.Clear();
             chart1.Series.Clear();
             label1.Visible = label2.Visible = label3.Visible = label4.Visible = 
                 label5.Visible = label6.Visible = label7.Visible = label8.Visible = false;
 
             button1.Visible = button2.Visible = button3.Visible = button4.Visible = button5.Visible = false;
 
-
-            /*Parallel.For(0, Samples.GetCount(), new ParallelOptions { MaxDegreeOfParallelism = CONSTANTS.thread_count }, i =>
-                    Parallel.For(0, Texts.GetCount(), new ParallelOptions { MaxDegreeOfParallelism = CONSTANTS.thread_count }, j =>
-						{
-                            var unique = RK.Check(i, j);
-                            MessageBox.Show("Тексты "+i+ " и "+j+ " сходны на " + unique + "%");
-                        }
-                    )
-            );*/
-
             
             for (int j = 0; j < Texts.GetCount(); j++)
             {
-                comboBox1.Items.Add(FileWorking.ListOfFilesSamples[j]);
+                comboBox1.Items.Add(FileWorking.ListOfFilesTexts[j]);
                 BarChart.bar_chart.Add(new List<double>());
                 for (int i = 0; i < Samples.GetCount(); i++)
                 {
                     var unique = RK.Check(i, j);
-                    if (j==0) chart1.Series.Add(FileWorking.ListOfFilesTexts[i]);
+                    if (j==0) chart1.Series.Add(FileWorking.ListOfFilesSamples[i]);
                     
                     BarChart.bar_chart[j].Add(unique);
                     if (j==0) chart1.Series[i].Points.AddY(unique); //Отрисовка графика для первого текста
-                    //chart1.ChartAreas[0].AxisX.CustomLabels.Add(new System.Windows.Forms.DataVisualization.Charting.CustomLabel (1, 2, "qqq", 1, System.Windows.Forms.DataVisualization.Charting.LabelMarkStyle.LineSideMark));
                     
                 }
             }
@@ -222,22 +216,22 @@ namespace CourceProject
             comboBox1.Visible = chart1.Visible = true;
 
         }
-
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
+      
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             
             for (int i = 0; i < Samples.GetCount(); i++)
             {
-                chart1.Series[FileWorking.ListOfFilesTexts[i]].Points.Clear();
-                chart1.Series[FileWorking.ListOfFilesTexts[i]].Points.AddY(BarChart.bar_chart[comboBox1.SelectedIndex][i]); 
+                chart1.Series[FileWorking.ListOfFilesSamples[i]].Points.Clear();
+                chart1.Series[FileWorking.ListOfFilesSamples[i]].Points.AddY(BarChart.bar_chart[comboBox1.SelectedIndex][i]); 
             }
             
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

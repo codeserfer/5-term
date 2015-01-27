@@ -7,10 +7,14 @@ using System.Windows.Forms;
 
 namespace CourceProject
 {
+
+    /// <summary>
+    /// Реализует поиск плагиата по алгоритму Рабина-Карпа
+    /// </summary>
     class RK
     {
-        static List<Int64> pieces = new List<Int64>();
-        static List<Int64> start_word = new List<Int64>();
+        static List<Int64> pieces = new List<Int64>(); //Найденные схожие фрагменты
+        static List<Int64> start_word = new List<Int64>(); //Начальные позиции найденных фрагментов
 
         /// <summary>
         /// Выполняет поиск данного хеша в списке
@@ -18,7 +22,7 @@ namespace CourceProject
         /// </summary>
         /// <param name="word">Искомых хеш</param>
         /// <returns>Позиция в списке, или -1, если хеш не найден</returns>
-        public static int FindInStartWord(Int64 word)
+        private static int FindInStartWord(Int64 word)
         {
             for (int i = 0; i < start_word.Count; i++)
             {
@@ -33,7 +37,7 @@ namespace CourceProject
         /// </summary>
         /// <param name="word">Хеш искомого фрагмента</param>
         /// <returns>Длина искомого фрагмента</returns>
-        public static Int64 Find(Int64 word)
+        private static Int64 Find(Int64 word)
         {
             var position = FindInStartWord(word);
             if (position != -1)
