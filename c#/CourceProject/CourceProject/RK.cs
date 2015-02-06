@@ -14,7 +14,7 @@ namespace CourceProject
     class RK
     {
         static List<Int64> pieces = new List<Int64>(); //Найденные схожие фрагменты
-        static List<Int64> start_word = new List<Int64>(); //Начальные позиции найденных фрагментов
+        static List<String> start_word = new List<String>(); //Начальные позиции найденных фрагментов
 
         /// <summary>
         /// Выполняет поиск данного хеша в списке
@@ -22,7 +22,7 @@ namespace CourceProject
         /// </summary>
         /// <param name="word">Искомых хеш</param>
         /// <returns>Позиция в списке, или -1, если хеш не найден</returns>
-        private static int FindInStartWord(Int64 word)
+        private static int FindInStartWord(String word)
         {
             for (int i = 0; i < start_word.Count; i++)
             {
@@ -37,12 +37,12 @@ namespace CourceProject
         /// </summary>
         /// <param name="word">Хеш искомого фрагмента</param>
         /// <returns>Длина искомого фрагмента</returns>
-        private static Int64 Find(Int64 word)
+        private static Int64 Find(String word)
         {
             var position = FindInStartWord(word);
             if (position != -1)
             {
-                return pieces[(int)position];
+                return pieces[position];
             }
             else
             {
@@ -76,13 +76,13 @@ namespace CourceProject
 
             for (Int64 j = 0; j < array2.Length; j++)
             {
-                Int64 start = 0;
+                String start = "";
                 Int64 found = 0;
                 for (Int64 i = 0; i < array1.Length; i++)
                 {
                     if (array1[i] == array2[j] && i<array1.Length-1)
                     {
-                        if (start == 0) start = Int64.Parse(array2[j]);
+                        if (start == "") start = (array2[j]);
                        
                         lenght_of_piece++;
                         i++;
@@ -101,7 +101,7 @@ namespace CourceProject
                         }
                     }
                     var found_lenght = Find(start);
-                    if (lenght_of_piece > 1 && found_lenght < lenght_of_piece)
+                    if (lenght_of_piece > 3 && found_lenght < lenght_of_piece)
                     {
 
                         if (found_lenght == 0)

@@ -153,6 +153,15 @@ namespace CourceProject
             return hash;
         }
 
+        public static string GetCrypt(string text)
+        {
+            string hash = "";
+            System.Security.Cryptography.SHA512 alg = System.Security.Cryptography.SHA512.Create();
+            byte[] result = alg.ComputeHash(Encoding.UTF8.GetBytes(text));
+            hash = Encoding.UTF8.GetString(result);
+            return hash;
+        }
+
         /// <summary>
         /// Добавляет хеш-файл в анализируемый список
         /// </summary>
@@ -186,11 +195,12 @@ namespace CourceProject
 
                 //Хеширование по словам
                 var text = FileWorking.ReadFile(filename).ToString().Replace(".", ""); //Удаление точек
+                List<String> HashList = new List<String>();
                 var words = text.Split(new char[] { ' ', '\n', '\t' });
-                List<Int64> HashList = new List<Int64>();
                 foreach (var word in words)
                 {
-                    if (word!="") HashList.Add(WordHash(word));
+                    //if (word!="") HashList.Add(WordHash(word).ToString());                    
+                    if (word!="") HashList.Add(GetCrypt(word));
                 }
                 //Хеширование по словам
 
